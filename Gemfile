@@ -35,6 +35,8 @@ gem 'jbuilder', '~> 2.5'
 
 # Use Sidekiq for background job processing
 gem 'sidekiq'
+# Use Twitter to assist enabling the use of Twitter APIs in the project
+gem 'twitter'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
