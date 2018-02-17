@@ -5,6 +5,7 @@ class FetchWorker
   # and put it in database.
 
   def perform()
-    # Do something
+    tweets = $client.user_timeline("TheAsylumVenue")
+    puts tweets.size
   end
 end
