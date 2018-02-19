@@ -1,0 +1,2 @@
+class RawTweet < ApplicationRecord
+end

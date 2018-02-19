@@ -11,6 +11,6 @@ class FetchWorker
     puts tweets.size
 
     # FOR EACH tweet IN tweets DO
-    # Store the tweet in PostGIS database
+    # Store the tweet in PostgreSQL  database
   end
 end
