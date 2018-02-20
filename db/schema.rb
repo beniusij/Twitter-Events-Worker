@@ -21,7 +21,7 @@ ActiveRecord::Schema.define(version: 20180220114650) do
     t.string "uri"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "is_checked"
+    t.boolean "is_checked", default: false, null: false
   end
 
 end
