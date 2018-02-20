@@ -6,7 +6,10 @@ class FetchWorker
 
   def perform()
 
-    options = {count: 200}
+    recent_tweet_id = RawTweet.last.tweet_id
+    options = {
+        since_id: recent_tweet_id
+    }
     venues = ["TheAsylumVenue"]
 
     venues.each do |venue|
