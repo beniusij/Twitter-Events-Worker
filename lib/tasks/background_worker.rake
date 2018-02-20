@@ -3,8 +3,7 @@ namespace :background_worker do
   task fetch_tweets: :environment do
     condition = true
     while(condition)
-      FetchWorker.perform_async
-      sleep 1.minute
+      FetchWorker.perform()
     end
   end
 

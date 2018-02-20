@@ -6,7 +6,7 @@ class FetchWorker
 
   def perform()
 
-    options = {count: 100}
+    options = {count: 200}
     # Fetch tweets from the platform
     tweets = $client.user_timeline("TheAsylumVenue", options)
 
