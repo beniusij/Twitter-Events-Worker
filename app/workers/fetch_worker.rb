@@ -6,7 +6,7 @@ class FetchWorker
 
   def perform()
 
-    options = {count: 5}
+    options = {count: 50}
     # Fetch tweets from the platform
     tweets = $client.user_timeline("TheAsylumVenue", options)
 
@@ -15,6 +15,11 @@ class FetchWorker
       # Store the tweet in PostgreSQL  database
       save_tweet(tweet)
     end
+
+  # Catch exception
+  rescue Twitter::Error::TooManyRequests => error
+    sleep error.rate_limit.reset_in + 1
+    retry
   end
 
   private
