@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180220160813) do
+ActiveRecord::Schema.define(version: 20180220164028) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 20180220160813) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "is_checked", default: false, null: false
+    t.index ["tweet_id"], name: "index_raw_tweets_on_tweet_id", unique: true
   end
 
 end
