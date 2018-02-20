@@ -6,15 +6,15 @@ class FetchWorker
 
   def perform()
 
+    options = {count: 5}
     # Fetch tweets from the platform
-    tweets = $client.user_timeline("TheAsylumVenue", {count: 5})
-    puts tweets.size
+    tweets = $client.user_timeline("TheAsylumVenue", options)
 
     # FOR EACH tweet IN tweets DO
     tweets.each do |tweet|
+      # Store the tweet in PostgreSQL  database
       save_tweet(tweet)
     end
-    # Store the tweet in PostgreSQL  database
   end
 
   private
