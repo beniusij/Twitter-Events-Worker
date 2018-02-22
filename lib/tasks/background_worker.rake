@@ -7,10 +7,8 @@ namespace :background_worker do
     queue = Sidekiq::Queue.new("default")
     count = queue.count
     condition = true
-    while(condition)
-      if count < 100
-        FetchWorker.perform_async()
-      end
+    while condition
+      FetchWorker.perform_async
     end
   end
 

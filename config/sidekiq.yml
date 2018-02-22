@@ -1,0 +1,4 @@
+# Sidekiq config file that is used by the server for
+# organising number of workers and queues
+---
+:concurrency: 5
