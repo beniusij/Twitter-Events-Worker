@@ -7,7 +7,7 @@ class FetchWorker
   def perform()
 
     if RawTweet.exists?
-      recent_tweet_id = RawTweet.last.tweet_id
+      recent_tweet_id = RawTweet.maximum('tweet_id')
       options = {
           since_id: recent_tweet_id
       }
@@ -16,7 +16,7 @@ class FetchWorker
           count: 200
       }
     end
-
+    puts options
     venues = ["TheAsylumVenue"]
 
     venues.each do |venue|
