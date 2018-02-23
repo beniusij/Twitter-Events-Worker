@@ -16,7 +16,7 @@ class FetchWorker
           count: 200
       }
     end
-    puts options
+
     venues = ["TheAsylumVenue"]
 
     venues.each do |venue|
