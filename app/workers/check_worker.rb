@@ -1,21 +1,35 @@
 class CheckWorker
   include Sidekiq::Worker
+  require 'chronic'
 
   # Worker will check whether the tweet is valid
   # by checking if it has words that could be parsed
   # to a date.
   def perform()
-    # Get a list of tweets that have not been checked and are not valid
+    # Get a list of tweets that have not been checked
     options = {
         is_checked: false,
     }
-    raw_tweets = RawTweet
     # Loop throught the list of tweets
+    RawTweet.where(options).each do |tweet|
       # Split the full_text into an array of words full_text.split
+      text = tweet.full_text.split
       # Iterate through the array
-        # Strip any non-word characters     word.gsub!(/[^0-9A-Za-z]/, '')
-        # is_valid = Chronic.parse(w).class == Time
-        # if is_valid
-          # Update in db is_valid column by setting it to TRUE
+      text.each do |word|
+        # Strip any non-word characters
+        word = word.gsub!(/[^0-9A-Za-z]/, '')
+        is_valid = Chronic.parse(word).class == Time
+      end
+      # if is_valid
+        # Update in db is_valid column by setting it to TRUE
+      is_valid ? update(tweet, is_valid) : ''
+    end
   end
+
+  private
+
+  # Update is_valid for an existing record
+  def update(tweet, is_valid)
+  end
+
 end
