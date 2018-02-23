@@ -6,6 +6,10 @@ class CheckWorker
   # to a date.
   def perform()
     # Get a list of tweets that have not been checked and are not valid
+    options = {
+        is_checked: false,
+    }
+    raw_tweets = RawTweet
     # Loop throught the list of tweets
       # Split the full_text into an array of words full_text.split
       # Iterate through the array
