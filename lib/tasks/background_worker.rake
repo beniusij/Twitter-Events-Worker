@@ -7,10 +7,13 @@ namespace :background_worker do
 
     condition = true
     while condition
-      # FetchWorker.perform_async
-
+      # Create a statistics object for queues
+      # After each iteration, the object will be created again
+      # since it does not update dynamically
       stats = Sidekiq::Stats.new
       count = stats.enqueued
+
+      # My way of capping the size of a queue
       count < 100 ? FetchWorker.perform_async : ""
     end
   end
