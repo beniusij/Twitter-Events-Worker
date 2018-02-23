@@ -22,7 +22,7 @@ class CheckWorker
       end
       # if is_valid
         # Update in db is_valid column by setting it to TRUE
-      is_valid ? update(tweet, is_valid) : ''
+      is_valid == true ? update(tweet, is_valid) : ''
     end
   end
 
@@ -30,6 +30,11 @@ class CheckWorker
 
   # Update is_valid for an existing record
   def update(tweet, is_valid)
+    properties = {
+        is_valid: is_valid,
+        is_checked: true
+    }
+    RawTweet.update(tweet.id, properties)
   end
 
 end
