@@ -13,7 +13,7 @@ class FetchWorker
       }
     else
       options = {
-          count: 200
+          count: 20
       }
     end
 
