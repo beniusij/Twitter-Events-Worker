@@ -19,7 +19,7 @@ class CheckWorker
       text.each do |word|
         unless is_valid
           # Strip any non-word characters
-          word = word.gsub!(/[^0-9A-Za-z]/, '')
+          word = word.gsub(/[^0-9A-Za-z]/, '')
           is_valid = Chronic.parse(word).class == Time
         end
       end
