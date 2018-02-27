@@ -8,6 +8,12 @@ namespace :background_manager do
     queue.clear
     puts "Clean"
     puts "After cleaning default queue: " + queue.count.to_s
+
+    rs = Sidekiq::RetrySet.new
+    puts "Before cleaning retry set: " + rs.size.to_s
+    rs.clear
+    puts "Clean"
+    puts "After cleaning retry queue: " + queue.count.to_s
   end
 
 end
