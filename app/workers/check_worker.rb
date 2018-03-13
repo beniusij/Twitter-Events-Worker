@@ -35,13 +35,20 @@ class CheckWorker
     text = text.split
     # Iterate through the array
     text.each do |word|
-      unless is_valid
-        # Strip any non-word characters
-        word = word.gsub(/[^0-9A-Za-z]/, '')
-        is_valid = Chronic.parse(word).class == Time
-      end
+      is_valid = is_valid == false ? check_wo_regex(word) : check_w_regex(word)
     end
     is_valid
   end
 
+  # Attempt to convert string to date w/o stripping of any characters
+  def check_wo_regex(word)
+    Chronic.parse(word).class == Time
+  end
+
+  # Attempt to convert string to date after striping of any special symbols
+  def check_w_regex(word)
+    # Strip any non-word characters
+    word = word.gsub(/[^0-9A-Za-z]/, '')
+    Chronic.parse(word).class == Time
+  end
 end
