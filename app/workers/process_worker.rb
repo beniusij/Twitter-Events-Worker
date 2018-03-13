@@ -4,7 +4,9 @@ class ProcessWorker
   # A worker for processing valid tweets and creating events
 
   def perform
-    # Do something
+    # From the tweet text get date and time
+    # Use tweet place if present, otherwise use user location
+    # Keywords store as full_text for now
   end
 
   private

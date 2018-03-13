@@ -37,7 +37,7 @@ gem 'jbuilder', '~> 2.5'
 gem 'sidekiq'
 # Use Twitter to assist enabling the use of Twitter APIs in the project
 gem 'twitter'
-# User Chronic to parse verbal dates to timestamp
+# Use Chronic to parse verbal dates to timestamp
 gem 'chronic'
 
 group :development, :test do
