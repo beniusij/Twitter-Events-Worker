@@ -35,7 +35,12 @@ class CheckWorker
     text = text.split
     # Iterate through the array
     text.each do |word|
-      is_valid = is_valid == false ? check_wo_regex(word) : check_w_regex(word)
+      unless is_valid
+        is_valid = check_wo_regex(word)
+        unless is_valid
+          is_valid = check_w_regex(word)
+        end
+      end
     end
     is_valid
   end
