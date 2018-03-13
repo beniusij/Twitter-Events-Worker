@@ -6,24 +6,26 @@ class FetchWorker
 
   def perform
 
+    # Get all twitter accounts if any
     TwitterAccount.exists? ? accounts = TwitterAccount.all : accounts = []
 
-    if RawTweet.exists?
-      recent_tweet_id = RawTweet.maximum('tweet_id')
-      options = {
-          since_id: recent_tweet_id
-      }
-    else
-      options = {
-          count: 20
-      }
+    accounts.each do |account|
+      account_name = account.twitter_name
+
+      if RawTweet.exists?(username: account_name)
+        recent_tweet_id = RawTweet.maximum('tweet_id')
+        options = {
+            since_id: recent_tweet_id
+        }
+      else
+        options = {
+            count: 20
+        }
+      end
+
+      fetch_job(account_name, options)
     end
 
-    venues = ["TheAsylumVenue"]
-
-    venues.each do |venue|
-      fetch_job(venue, options)
-    end
   end
 
   private
@@ -40,9 +42,9 @@ class FetchWorker
   end
 
   # Fetch tweets from the platform
-  def fetch_job(venue, options)
-    tweets = $client.user_timeline(venue, options)
-    user = $client.user(venue)
+  def fetch_job(acc, options)
+    tweets = $client.user_timeline(acc, options)
+    user = $client.user(acc)
 
     # FOR EACH tweet IN tweets DO
     tweets.each do |tweet|
