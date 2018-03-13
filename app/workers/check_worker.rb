@@ -39,7 +39,6 @@ class CheckWorker
         # Strip any non-word characters
         word = word.gsub(/[^0-9A-Za-z]/, '')
         is_valid = Chronic.parse(word).class == Time
-
       end
     end
     is_valid

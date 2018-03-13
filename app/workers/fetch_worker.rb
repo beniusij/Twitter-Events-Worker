@@ -4,7 +4,7 @@ class FetchWorker
   # A worker for fetching tweets from Twitter
   # and put it in database.
 
-  def perform()
+  def perform
 
     if RawTweet.exists?
       recent_tweet_id = RawTweet.maximum('tweet_id')

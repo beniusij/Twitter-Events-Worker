@@ -14,7 +14,7 @@ namespace :background_worker do
       count = stats.enqueued
 
       # My way of capping the size of a queue
-      count < 100 ? FetchWorker.perform_async : ""
+      count < 100 ? FetchWorker.perform : ""
     end
   end
 
