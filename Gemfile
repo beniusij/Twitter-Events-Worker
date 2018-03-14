@@ -39,6 +39,8 @@ gem 'sidekiq'
 gem 'twitter'
 # Use Chronic to parse verbal dates to timestamp
 gem 'chronic'
+# Use Nickel to extract date from text
+gem 'nickel'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
