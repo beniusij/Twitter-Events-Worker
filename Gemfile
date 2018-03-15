@@ -41,6 +41,8 @@ gem 'twitter'
 gem 'chronic'
 # Use Nickel to extract date from text
 gem 'nickel'
+# Use Whenever for cron jobs
+gem 'whenever', require: false
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
