@@ -5,20 +5,24 @@ class ProcessWorker
 
   def perform
     options = {
-        is_valid: true,
-        is_processed: false
+      is_valid: true,
+      is_processed: false
     }
-    RawTweet.find_by(options).each do |tweet|
-      # Use tweet place if present, otherwise use user location
-      place     = place(tweet)
-      # From the tweet text get date and time
-      date      = date(tweet.full_text)
-      time      = time(tweet.full_text)
-      # Keywords store as full_text for now
-      keywords  = tweet.full_text
-      username  = tweet.user.screen_name
-      save_event(place, date, time, keywords, username)
-      update_tweet(tweet.id)
+
+    tweets = RawTweet.where(options)
+    unless tweets.nil?
+      tweets.each do |tweet|
+        # Use tweet place if present, otherwise use user location
+        place     = location(tweet)
+        # From the tweet text get date and time
+        date      = date(tweet.full_text)
+        time      = time(tweet.full_text)
+        # Keywords store as full_text for now
+        keywords  = tweet.full_text
+        username  = tweet.user.screen_name
+        save_event(place, date, time, keywords, username)
+        update_tweet(tweet.id)
+      end
     end
   end
 
@@ -76,12 +80,4 @@ class ProcessWorker
     end
   end
 
-  # Get event location
-  def location(tweet)
-    if tweet.place?
-      tweet.place.full_name
-    else
-      tweet.user.location
-    end
-  end
 end

@@ -38,6 +38,7 @@ class FetchWorker
       t.tweet_posted_at = tweet.created_at
       t.user_location   = user.location
       t.username        = user.screen_name
+      t.place           = place(tweet)
     end
   end
 
@@ -58,4 +59,12 @@ class FetchWorker
     retry
   end
 
+  # Get event place
+  def place(tweet)
+    if tweet.place?
+      tweet.place.full_name
+    else
+      tweet.user.location
+    end
+  end
 end
