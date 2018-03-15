@@ -13,13 +13,16 @@ class ProcessWorker
     unless tweets.nil?
       tweets.each do |tweet|
         # Use tweet place if present, otherwise use user location
-        place     = location(tweet)
+        place     = tweet.place
+        # Clear the tweet text
+        text = tweet.full_text.tr("\n", " ")
+        text = text.gsub(/[^0-9A-Za-z. ]/, '')
         # From the tweet text get date and time
-        date      = date(tweet.full_text)
-        time      = time(tweet.full_text)
+        date      = date(text)
+        time      = time(text)
         # Keywords store as full_text for now
         keywords  = tweet.full_text
-        username  = tweet.user.screen_name
+        username  = tweet.username
         save_event(place, date, time, keywords, username)
         update_tweet(tweet.id)
       end
@@ -30,7 +33,7 @@ class ProcessWorker
 
   # Save the event in the table
   def save_event(place, date, time, keywords, username)
-    Events.create do |t|
+    Event.create do |t|
       t.place     = place
       t.date      = date
       t.time      = time
@@ -44,39 +47,33 @@ class ProcessWorker
     RawTweet.update(id, is_processed: true)
   end
 
+  def datetime?(text)
+    # First attempt to get date or time
+    datetime = Nickel.parse(text).occurrences[0]
+    # Second attempt to get date or time w/ regex
+    if datetime.nil?
+      datetime = Nickel.parse(text).occurrences[0]
+    end
+
+    datetime.nil? ? false : true
+  end
+
   # Get event date from text
   def date(text)
-    # First attempt to extract date
-    extract = Nickel.parse(text).occurrences[0]
-    # Second attempt to extract date
-    if extract.nil?
-      clean_text = text.tr("\n", " ")
-      clean_text = clean_text.gsub(/[^0-9A-Za-z. ]/, '')
-      extract = Nickel.parse(clean_text).occurrences[0]
-    end
-    # Return parsed date or nil
-    if extract.nil?
-      extract
-    else
-      Nickel.parse(extract).occurrences[0].start_date.to_date
-    end
+    datetime?(text) ? Nickel.parse(text).occurrences[0].start_date.to_date : ""
+  end
+
+  def time?(text)
+    extract = Nickel.parse(text).occurrences[0].start_time
+    extract.nil? ? false : true
   end
 
   # Get event [start] time from text
   def time(text)
-    # First attempt to extract time
-    extract = Nickel.parse(text).occurrences[0].start_time
-    # Second attempt to extract time
-    if extract.nil?
-      clean_text = text.tr("\n", " ")
-      clean_text = clean_text.gsub(/[^0-9A-Za-z. ]/, '')
-      extract = Nickel.parse(clean_text).occurrences[0].start_time
-    end
-    # Return parsed time or nil
-    if extract.nil?
-      extract
-    else
-      Nickel.parse(extract).occurrences[0].start_time.to_time
+    if datetime?(text)
+      if time?(text)
+        Nickel.parse(text).occurrences[0].start_time.to_time
+      end
     end
   end
 
