@@ -35,6 +35,8 @@ gem 'jbuilder', '~> 2.5'
 
 # Use Sidekiq for background job processing
 gem 'sidekiq'
+# Use Sidekiq Unique Jobs for keeping jobs unique
+gem 'sidekiq-unique-jobs'
 # Use Twitter to assist enabling the use of Twitter APIs in the project
 gem 'twitter'
 # Use Chronic to parse verbal dates to timestamp

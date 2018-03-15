@@ -1,5 +1,6 @@
 class FetchWorker
   include Sidekiq::Worker
+  #sidekiq_options unique: :until_executed
 
   # A worker for fetching tweets from Twitter
   # and put it in database.
@@ -7,7 +8,7 @@ class FetchWorker
   def perform
 
     # Get all twitter accounts if any
-    TwitterAccount.exists? ? accounts = TwitterAccount.all : accounts = []
+    accounts = TwitterAccount.exists? ? TwitterAccount.all : []
 
     accounts.each do |account|
       account_name = account.twitter_name
