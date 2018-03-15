@@ -36,7 +36,6 @@ class FetchWorker
       t.full_text       = tweet.full_text
       t.uri             = tweet.uri
       t.tweet_posted_at = tweet.created_at
-      t.user_location   = user.location
       t.username        = user.screen_name
       t.place           = place(tweet)
     end
