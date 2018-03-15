@@ -9,23 +9,29 @@ class ProcessWorker
         is_processed: false
     }
     RawTweet.find_by(options).each do |tweet|
-      # From the tweet text get date and time
       # Use tweet place if present, otherwise use user location
+      place     = place(tweet)
+      # From the tweet text get date and time
+      date      = date(tweet.full_text)
+      time      = time(tweet.full_text)
       # Keywords store as full_text for now
-      date = date(tweet.full_text)
-      time = time(tweet.full_text)
+      keywords  = tweet.full_text
+      username  = tweet.user.screen_name
+      save_event(place, date, time, keywords, username)
+      update_tweet(tweet.id)
     end
   end
 
   private
 
   # Save the event in the table
-  def save_event(place, date, time, keywords)
+  def save_event(place, date, time, keywords, username)
     Events.create do |t|
       t.place     = place
       t.date      = date
       t.time      = time
       t.keywords  = keywords
+      t.username  = username
     end
   end
 
@@ -67,6 +73,15 @@ class ProcessWorker
       extract
     else
       Nickel.parse(extract).occurrences[0].start_time.to_time
+    end
+  end
+
+  # Get event location
+  def location(tweet)
+    if tweet.place?
+      tweet.place.full_name
+    else
+      tweet.user.location
     end
   end
 end
