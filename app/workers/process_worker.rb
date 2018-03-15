@@ -23,7 +23,8 @@ class ProcessWorker
         # Keywords store as full_text for now
         keywords  = tweet.full_text
         username  = tweet.username
-        save_event(place, date, time, keywords, username)
+        id        = tweet.tweet_id
+        save_event(place, date, time, keywords, username, id)
         update_tweet(tweet.id)
       end
     end
@@ -32,13 +33,14 @@ class ProcessWorker
   private
 
   # Save the event in the table
-  def save_event(place, date, time, keywords, username)
+  def save_event(place, date, time, keywords, username, id)
     Event.create do |t|
       t.place     = place
       t.date      = date
       t.time      = time
       t.keywords  = keywords
       t.username  = username
+      t.tweet_id  = id
     end
   end
 

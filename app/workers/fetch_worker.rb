@@ -12,14 +12,14 @@ class FetchWorker
     accounts.each do |account|
       account_name = account.twitter_name
 
-      if RawTweet.exists?(username: account_name)
-        recent_tweet_id = RawTweet.maximum('tweet_id')
+      if Event.exists?(username: account_name)
+        recent_tweet_id = Event.maximum('tweet_id')
         options = {
-            since_id: recent_tweet_id
+          since_id: recent_tweet_id
         }
       else
         options = {
-            count: 20
+          count: 20
         }
       end
 
