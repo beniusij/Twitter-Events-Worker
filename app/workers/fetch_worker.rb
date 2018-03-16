@@ -1,6 +1,6 @@
 class FetchWorker
   include Sidekiq::Worker
-  #sidekiq_options unique: :until_executed
+  sidekiq_options unique: :until_and_while_executing, lock_expiration: 120 * 60
 
   # A worker for fetching tweets from Twitter
   # and put it in database.

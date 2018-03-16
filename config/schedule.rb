@@ -19,17 +19,20 @@
 
 # Learn more: http://github.com/javan/whenever
 
+# Use bundle exec whenever --update-crontab command update cron tab
+# for a list of cron jobs to be executed.
+
 set :output, './log/cron.log'
 
 every 30.minutes do
-  #runner 'FetchWorker.perform_async'
+  runner 'FetchWorker.perform_async'
 end
 
 every 5.minutes do
-  #runner 'CheckWorker.perform_async'
-  #runner 'ProcessWorker.perform_async'
+  runner 'CheckWorker.perform_async'
+  runner 'ProcessWorker.perform_async'
 end
 
-every 10.minutes do
-  #runner 'CleanWorker.perform_async'
+every 6.minutes do
+  runner 'CleanWorker.perform_async'
 end

@@ -2,6 +2,8 @@ class CheckWorker
   include Sidekiq::Worker
   require 'chronic'
 
+  sidekiq_options unique: :until_and_while_executing, lock_expiration: 10 * 60
+
   # Worker will check whether the tweet is valid
   # by checking if it has words that could be parsed
   # to a date.

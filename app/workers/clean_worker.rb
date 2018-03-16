@@ -1,6 +1,8 @@
 class CleanWorker
   include Sidekiq::Worker
 
+  sidekiq_options unique: :until_and_while_executing, lock_expiration: 12 * 60
+
   def perform
     delete_processed
     delete_invalid

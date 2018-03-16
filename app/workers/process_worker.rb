@@ -1,6 +1,8 @@
 class ProcessWorker
   include Sidekiq::Worker
 
+  sidekiq_options unique: :until_and_while_executing, lock_expiration: 10 * 60
+
   # A worker for processing valid tweets and creating events
 
   def perform
