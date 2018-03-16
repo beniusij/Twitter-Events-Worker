@@ -39,9 +39,7 @@ class CheckWorker
     text.each do |word|
       unless is_valid
         is_valid = check_wo_regex(word)
-        unless is_valid
-          is_valid = check_w_regex(word)
-        end
+        is_valid = check_w_regex(word) unless is_valid
       end
     end
     is_valid
@@ -50,6 +48,8 @@ class CheckWorker
   # Attempt to convert string to date w/o stripping of any characters
   def check_wo_regex(word)
     Chronic.parse(word).class == Time
+  rescue => e
+    return false
   end
 
   # Attempt to convert string to date after striping of any special symbols
@@ -57,5 +57,7 @@ class CheckWorker
     # Strip any non-word characters
     word = word.gsub(/[^0-9A-Za-z]/, '')
     Chronic.parse(word).class == Time
+  rescue => e
+    return false
   end
 end
