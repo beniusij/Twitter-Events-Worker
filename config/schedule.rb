@@ -24,15 +24,15 @@
 
 set :output, './log/cron.log'
 
-every 30.minutes do
+every 30.minutes do # 30
   runner 'FetchWorker.perform_async'
 end
 
-every 5.minutes do
+every 5.minutes do # 5
   runner 'CheckWorker.perform_async'
   runner 'ProcessWorker.perform_async'
 end
 
-every 6.minutes do
+every 6.minutes do # 6
   runner 'CleanWorker.perform_async'
 end

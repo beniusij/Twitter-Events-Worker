@@ -60,6 +60,11 @@ class ProcessWorker
     end
 
     datetime.nil? ? false : true
+
+  rescue RuntimeError => e
+    puts "Full text: " + text
+    puts e
+    return false
   end
 
   # Get event date from text
@@ -70,6 +75,10 @@ class ProcessWorker
   def time?(text)
     extract = Nickel.parse(text).occurrences[0].start_time
     extract.nil? ? false : true
+  rescue RuntimeError => e
+    puts "Full text: " + text
+    puts e
+    return false
   end
 
   # Get event [start] time from text
