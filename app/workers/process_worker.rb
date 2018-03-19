@@ -17,6 +17,7 @@ class ProcessWorker
         # Use tweet place if present, otherwise use user location
         place     = tweet.place
         # Clear the tweet text
+        puts tweet.full_text
         text = tweet.full_text.tr("\n", " ")
         text = text.gsub(/[^0-9A-Za-z. ]/, '')
         # From the tweet text get date and time
@@ -30,6 +31,8 @@ class ProcessWorker
         update_tweet(tweet.id)
       end
     end
+  rescue NoMethodError => e
+    puts e
   end
 
   private
@@ -52,17 +55,10 @@ class ProcessWorker
   end
 
   def datetime?(text)
-    # First attempt to get date or time
     datetime = Nickel.parse(text).occurrences[0]
-    # Second attempt to get date or time w/ regex
-    if datetime.nil?
-      datetime = Nickel.parse(text).occurrences[0]
-    end
-
     datetime.nil? ? false : true
 
-  rescue RuntimeError => e
-    puts "Full text: " + text
+  rescue => e
     puts e
     return false
   end
@@ -76,7 +72,6 @@ class ProcessWorker
     extract = Nickel.parse(text).occurrences[0].start_time
     extract.nil? ? false : true
   rescue RuntimeError => e
-    puts "Full text: " + text
     puts e
     return false
   end
