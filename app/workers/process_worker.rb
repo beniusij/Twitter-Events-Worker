@@ -17,7 +17,6 @@ class ProcessWorker
         # Use tweet place if present, otherwise use user location
         place     = tweet.place
         # Clear the tweet text
-        puts tweet.full_text
         text = tweet.full_text.tr("\n", " ")
         text = text.gsub(/[^0-9A-Za-z. ]/, '')
         # From the tweet text get date and time
