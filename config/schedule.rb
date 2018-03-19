@@ -24,7 +24,7 @@
 
 set :output, './log/cron.log'
 
-every 10.minutes do # 30
+every 30.minutes do # 30
   runner 'FetchWorker.perform_async'
 end
 
