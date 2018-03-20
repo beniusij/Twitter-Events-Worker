@@ -6,6 +6,7 @@ class CleanWorker
   def perform
     delete_processed
     delete_invalid
+    delete_old
   end
 
   private
@@ -16,10 +17,14 @@ class CleanWorker
 
   def delete_invalid
     conditions = {
-        is_checked: true,
-        is_valid:   false
+      is_checked: true,
+      is_valid:   false
     }
 
     RawTweet.where(conditions).delete_all
+  end
+
+  def delete_old
+    Event.delete_old_events
   end
 end
