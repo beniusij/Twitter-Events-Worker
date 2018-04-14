@@ -33,6 +33,6 @@ every 5.minutes do # 5
   runner 'ProcessWorker.perform_async'
 end
 
-every 1.minutes do # 6
+every 6.minutes do # 6
   runner 'CleanWorker.perform_async'
 end
