@@ -2,13 +2,14 @@ class FetchWorker
   include Sidekiq::Worker
   sidekiq_options unique: :until_and_while_executing, lock_expiration: 120 * 60
 
+  LIMIT = 1500 # rate limit for making request to get user timeline (tweets)
   # A worker for fetching tweets from Twitter
   # and put it in database.
 
   def perform
 
     # Get all twitter accounts if any
-    accounts = TwitterAccount.exists? ? TwitterAccount.all : []
+    accounts = TwitterAccount.exists? ? TwitterAccount.least_checked(LIMIT) : []
 
     accounts.each do |account|
       account_name = account.twitter_name
@@ -25,6 +26,7 @@ class FetchWorker
       end
 
       fetch_job(account_name, options)
+      update_account(account.id)
     end
 
   end
@@ -66,5 +68,10 @@ class FetchWorker
     else
       tweet.user.location
     end
+  end
+
+  # Update last_fetched column in twitter_accounts table
+  def update_account(id)
+    TwitterAccount.update(id, last_checked: Time.now)
   end
 end
