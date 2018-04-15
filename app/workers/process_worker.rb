@@ -76,7 +76,7 @@ class ProcessWorker
     datetime.nil? ? false : true
 
   rescue => e
-    puts e
+    Failure.save_case(text, e)
     return false
   end
 
@@ -90,7 +90,7 @@ class ProcessWorker
     end
 
   rescue RuntimeError => e
-    puts e
+    Failure.save_case(text, e)
     return false
   end
 
