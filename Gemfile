@@ -39,8 +39,6 @@ gem 'sidekiq'
 gem 'sidekiq-unique-jobs'
 # Use Twitter to assist enabling the use of Twitter APIs in the project
 gem 'twitter'
-# Use Chronic to parse verbal dates to timestamp
-gem 'chronic'
 # Use Nickel to extract date from text
 gem 'nickel'
 # Use Whenever for cron jobs

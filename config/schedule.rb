@@ -29,7 +29,6 @@ every 30.minutes do # 30
 end
 
 every 5.minutes do # 5
-  runner 'CheckWorker.perform_async'
   runner 'ProcessWorker.perform_async'
 end
 

@@ -4,19 +4,19 @@ class ProcessWorker
   sidekiq_options unique: :until_and_while_executing, lock_expiration: 10 * 60
 
   # A worker for processing valid tweets and creating events
-
+  # 1. Check unprocessed tweet
+  # 2. Valid tweets should be processed and events should be created
+  # 3. Invalid tweets should be marked as processed and left for removal
+  # by other worker
   def perform
     # Get unprocessed tweets
-    options = {
-      is_processed: false
-    }
-    # Check unprocessed tweet
-    # Valid tweets should be processed and events should be created
-    # Invalid tweets should be marked as processed and left for removal by other worker
+    options = { is_processed: false }
     tweets = RawTweet.where(options)
     unless tweets.nil?
       tweets.each do |tweet|
-        save_event(prep_event(tweet))
+        if valid?(tweet.full_text)
+          save_event(prep_event(tweet))
+        end
         update_tweet(tweet.id)
       end
     end
@@ -26,27 +26,12 @@ class ProcessWorker
 
   private
 
-  # Checks if the tweet has valid info about event
-  def is_valid?(tweet)
-    is_valid = false
-
-    unless is_valid
-      is_valid = check_wo_regex(word)
-      is_valid = check_w_regex(word) unless is_valid
-    end
-
-    is_valid
-  end
-
   # Prepare event info for saving
   # Return hash array with info about event
   def prep_event(tweet)
-    # Clear the tweet text
-    text = clear_text(tweet.full_text)
     # From the tweet text get date and time
-    date      = date(text)
-    time      = time(text)
-
+    date      = date(tweet.full_text)
+    time      = time(tweet.full_text)
     {
         place:  tweet.place,
         date:   date,
@@ -66,18 +51,23 @@ class ProcessWorker
   # Save the event in the table
   def save_event(event)
     Event.create do |t|
-      t.place     = event.place
-      t.date      = event.date
-      t.time      = event.time
-      t.keywords  = event.keywords
-      t.username  = event.username
-      t.tweet_id  = event.id
+      t.place     = event[:place]
+      t.date      = event[:date]
+      t.time      = event[:time]
+      t.keywords  = event[:keywords]
+      t.username  = event[:username]
+      t.tweet_id  = event[:id]
     end
   end
 
   # Update the raw tweet as processed
   def update_tweet(id)
     RawTweet.update(id, is_processed: true)
+  end
+
+  # Checks if the tweet has valid date about event
+  def valid?(text)
+    datetime?(text) || datetime?(clear_text(text))
   end
 
   # Returns boolean for whether there is date in the text
@@ -92,8 +82,13 @@ class ProcessWorker
 
   # Returns boolean for whether there is time in text
   def time?(text)
-    extract = Nickel.parse(text).occurrences[0].start_time
-    extract.nil? ? false : true
+    if datetime?(text)
+      extract = Nickel.parse(text).occurrences[0].start_time
+      extract.nil? ? false : true
+    else
+      false
+    end
+
   rescue RuntimeError => e
     puts e
     return false
@@ -101,14 +96,21 @@ class ProcessWorker
 
   # Get event date from text
   def date(text)
-    datetime?(text) ? Nickel.parse(text).occurrences[0].start_date.to_date : ""
+    if datetime?(text)
+      Nickel.parse(text).occurrences[0].start_date.to_date
+    else
+      Nickel.parse(clear_text(text)).occurrences[0].start_date.to_date
+    end
   end
 
   # Get event [start] time from text
   def time(text)
-    if datetime?(text)
-      if time?(text)
-        Nickel.parse(text).occurrences[0].start_time.to_time
+    if time?(text)
+      Nickel.parse(text).occurrences[0].start_time.to_time
+    else
+      clean_text = clear_text(text)
+      if time?(clean_text)
+        Nickel.parse(clean_text).occurrences[0].start_time.to_time
       end
     end
   end
